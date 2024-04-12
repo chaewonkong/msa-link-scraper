@@ -31,6 +31,21 @@ func NewHTTPResponse(
 	}
 }
 
+// String returns the body of the HTTPResponse as a string
+func (h HTTPResponse) String() string {
+	return string(h.Body)
+}
+
+// GetStatusCode returns the status code of the HTTPResponse
+func (h HTTPResponse) GetStatusCode() int {
+	return h.StatusCode
+}
+
+// GetMessage returns the message of the HTTPResponse
+func (h HTTPResponse) GetMessage() string {
+	return h.Message
+}
+
 // HTTPRequester is a struct that makes HTTP requests
 type HTTPRequester struct {
 	client *http.Client

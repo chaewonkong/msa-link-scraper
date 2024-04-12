@@ -9,7 +9,7 @@ PHONY: ref
 run:
 	@echo "Running the application"
 	@echo "running on: $$ENV"
-	@echo "DB: $$DB_HOST"
+	@echo "API: $$API_HOST"
 	@echo "QUEUE: $$QUEUE_HOST"
 	@go run .
 PHONY: run

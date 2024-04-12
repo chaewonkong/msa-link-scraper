@@ -7,7 +7,6 @@ import (
 	"log/slog"
 	"os"
 
-	config "github.com/chaewonkong/msa-link-api/config"
 	"github.com/chaewonkong/msa-link-api/link"
 	"github.com/chaewonkong/msa-link-scraper/convert"
 	"github.com/chaewonkong/msa-link-scraper/fetch"
@@ -16,8 +15,8 @@ import (
 )
 
 func main() {
-	cfg := config.NewAppConfig()
-	requester := transport.NewHTTPRequester("http://localhost:8080")
+	cfg := NewAppConfig()
+	requester := transport.NewHTTPRequester(cfg.APIHost)
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
@@ -88,7 +87,7 @@ func main() {
 				logger.Error("failed to send request", err)
 			}
 
-			logger.Info("Response", "body", fmt.Sprintf("%v", resp.Body), "status", resp.StatusCode, "message", resp.Message)
+			logger.Info("Response", "body", fmt.Sprintf("%v", resp.String()), "status", resp.GetStatusCode(), "message", resp.GetMessage())
 		}
 	}()
 
