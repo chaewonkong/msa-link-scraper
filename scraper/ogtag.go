@@ -1,39 +1,29 @@
-package fetch
+package scraper
 
 import (
-	"log/slog"
+	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-// Fetcher is a struct that fetchees data
-type Fetcher struct {
-	logger *slog.Logger
-}
-
-// NewFetcher creates a new Fetcher
-func NewFetcher(logger *slog.Logger) *Fetcher {
-	return &Fetcher{
-		logger: logger,
-	}
-}
+// TODO: unit test
 
 // GetOpenGraphTags fetches the Open Graph tags from a given URL
-func (f *Fetcher) GetOpenGraphTags(url string) (map[string]string, error) {
+func GetOpenGraphTags(url string) (map[string]string, error) {
 	ogData := make(map[string]string)
 	// Fetch the HTML page
 	page, err := http.Get(url)
 	if err != nil {
-		f.logger.Error("Failed to fetch URL", err)
+		err = fmt.Errorf("failed to fetch URL: %w", err)
 		return ogData, err
 	}
 	defer page.Body.Close()
 
 	doc, err := goquery.NewDocumentFromReader(page.Body)
 	if err != nil {
-		f.logger.Error("Failed to parse HTML", err)
+		err = fmt.Errorf("failed to parse HTML: %w", err)
 		return ogData, err
 	}
 

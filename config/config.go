@@ -1,4 +1,4 @@
-package main
+package config
 
 import "os"
 
@@ -8,14 +8,13 @@ type App struct {
 	Queue   queue  `json:"queue"`
 }
 
-type (
-	queue struct {
-		Host     string `json:"host"`
-		User     string `json:"user"`
-		Password string `json:"password"`
-		Port     string `json:"port"`
-	}
-)
+type queue struct {
+	Host     string `json:"host"`
+	User     string `json:"user"`
+	Password string `json:"password"`
+	Port     string `json:"port"`
+	Name     string `json:"name"`
+}
 
 // NewAppConfig creates a new DBConfig
 func NewAppConfig() *App {
@@ -25,6 +24,7 @@ func NewAppConfig() *App {
 		User:     os.Getenv("QUEUE_USER"),
 		Password: os.Getenv("QUEUE_PASSWORD"),
 		Port:     os.Getenv("QUEUE_PORT"),
+		Name:     os.Getenv("QUEUE_NAME"),
 	}
 
 	return &App{apiHost, queue}

@@ -8,47 +8,38 @@ import (
 	"os"
 
 	"github.com/chaewonkong/msa-link-api/link"
+	"github.com/chaewonkong/msa-link-scraper/config"
 	"github.com/chaewonkong/msa-link-scraper/convert"
-	"github.com/chaewonkong/msa-link-scraper/fetch"
+	"github.com/chaewonkong/msa-link-scraper/scraper"
 	"github.com/chaewonkong/msa-link-scraper/transport"
-	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func main() {
-	cfg := NewAppConfig()
+	cfg := config.NewAppConfig()
 	requester := transport.NewHTTPRequester(cfg.APIHost)
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	conStr := fmt.Sprintf("amqp://%s:%s@%s:%s/", cfg.Queue.User, cfg.Queue.Password, cfg.Queue.Host, cfg.Queue.Port)
-	queueConn, err := amqp.Dial(conStr)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer queueConn.Close()
+	// rabbitMQ
+	mq := transport.NewRabbitMQ(cfg)
+	defer mq.Close()
 
-	ch, err := queueConn.Channel()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer ch.Close()
-
-	q, err := ch.QueueDeclare(
-		"link", // name
-		false,  // durable
-		false,  // delete when unused
-		false,  // exclusive
-		false,  // no-wait
-		nil,    // arguments
+	q, err := mq.Ch.QueueDeclare(
+		cfg.Queue.Name, // name
+		true,           // durable
+		false,          // delete when unused
+		false,          // exclusive
+		false,          // no-wait
+		nil,            // arguments
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	msgs, err := ch.Consume(
+	msgs, err := mq.Ch.Consume(
 		q.Name, // queue
 		"",     // consumer
-		true,   // auto-ack
+		false,  // auto-ack
 		false,  // exclusive
 		false,  // no-local
 		false,  // no-wait
@@ -72,8 +63,7 @@ func main() {
 			}
 
 			// fetch og tags
-			fetcher := fetch.NewFetcher(logger)
-			ogData, err := fetcher.GetOpenGraphTags(q.URL)
+			ogData, err := scraper.GetOpenGraphTags(q.URL)
 			if err != nil {
 				logger.Error("Failed to fetch Open Graph tags", err)
 			}
@@ -88,8 +78,19 @@ func main() {
 			}
 
 			logger.Info("Response", "body", fmt.Sprintf("%v", resp.String()), "status", resp.GetStatusCode(), "message", resp.GetMessage())
+			err = d.Ack(false)
+			if err != nil {
+				logger.Error("Failed to ack message", err)
+			}
 		}
 	}()
 
 	<-forever
 }
+
+// kafka message handler
+// message
+// scraping
+// convert object
+// send request
+// return
