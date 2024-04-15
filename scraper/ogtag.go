@@ -6,15 +6,20 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/chaewonkong/msa-link-scraper/transport/httprequest"
 )
 
-// TODO: unit test
-
 // GetOpenGraphTags fetches the Open Graph tags from a given URL
-func GetOpenGraphTags(url string) (map[string]string, error) {
+func GetOpenGraphTags(c httprequest.HTTPClient, url string) (map[string]string, error) {
 	ogData := make(map[string]string)
 	// Fetch the HTML page
-	page, err := http.Get(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		err = fmt.Errorf("failed to create request: %w", err)
+		return ogData, err
+	}
+
+	page, err := c.Do(req)
 	if err != nil {
 		err = fmt.Errorf("failed to fetch URL: %w", err)
 		return ogData, err
