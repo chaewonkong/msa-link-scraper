@@ -1,4 +1,4 @@
-package scraper_test
+package meta_test
 
 import (
 	"io"
@@ -6,7 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/chaewonkong/msa-link-scraper/scraper"
+	"github.com/chaewonkong/msa-link-scraper/meta"
+	"github.com/chaewonkong/msa-link-scraper/meta/property"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,7 +22,8 @@ func TestGetOpenGraphTags(t *testing.T) {
 		mc := NewMockHTMLReader(html, nil)
 
 		// when
-		data, err := scraper.GetOpenGraphTags(mc, "https://example.com")
+		scraper := meta.NewScraper(mc)
+		data, err := scraper.Fetch("https://example.com", property.OpenGraph)
 
 		// then
 		assert.NoError(t, err)

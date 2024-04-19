@@ -12,7 +12,8 @@ import (
 	"github.com/chaewonkong/msa-link-api/link"
 	"github.com/chaewonkong/msa-link-scraper/config"
 	"github.com/chaewonkong/msa-link-scraper/convert"
-	"github.com/chaewonkong/msa-link-scraper/scraper"
+	"github.com/chaewonkong/msa-link-scraper/meta"
+	"github.com/chaewonkong/msa-link-scraper/meta/property"
 	"github.com/chaewonkong/msa-link-scraper/transport"
 	"github.com/chaewonkong/msa-link-scraper/transport/httprequest"
 )
@@ -25,6 +26,7 @@ func main() {
 	requester := httprequest.NewHTTPRequester(client, cfg.APIHost)
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	scraper := meta.NewScraper(client)
 
 	// rabbitMQ
 	mq := transport.NewRabbitMQ(cfg)
@@ -69,7 +71,7 @@ func main() {
 			}
 
 			// fetch og tags
-			ogData, err := scraper.GetOpenGraphTags(client, q.URL)
+			ogData, err := scraper.Fetch(q.URL, property.OpenGraph)
 			if err != nil {
 				logger.Error("Failed to fetch Open Graph tags", err)
 			}
