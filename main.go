@@ -14,8 +14,8 @@ import (
 	"github.com/chaewonkong/msa-link-scraper/convert"
 	"github.com/chaewonkong/msa-link-scraper/meta"
 	"github.com/chaewonkong/msa-link-scraper/meta/property"
-	"github.com/chaewonkong/msa-link-scraper/transport"
 	"github.com/chaewonkong/msa-link-scraper/transport/httprequest"
+	"github.com/chaewonkong/msa-link/lib/transport/queue"
 )
 
 func main() {
@@ -29,7 +29,8 @@ func main() {
 	scraper := meta.NewScraper(client)
 
 	// rabbitMQ
-	mq := transport.NewRabbitMQ(cfg)
+	mqConnUrl := queue.URL(cfg.Queue.User, cfg.Queue.Password, cfg.Queue.Host, cfg.Queue.Port)
+	mq := queue.NewRabbitMQ(mqConnUrl)
 	defer mq.Close()
 
 	q, err := mq.Ch.QueueDeclare(

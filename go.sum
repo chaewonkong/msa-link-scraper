@@ -2,6 +2,8 @@ github.com/PuerkitoBio/goquery v1.9.1 h1:mTL6XjbJTZdpfL+Gwl5U2h1l9yEkJjhmlTeV9VP
 github.com/PuerkitoBio/goquery v1.9.1/go.mod h1:cW1n6TmIMDoORQU5IU/P1T3tGFunOeXEpGP2WHRwkbY=
 github.com/andybalholm/cascadia v1.3.2 h1:3Xi6Dw5lHF15JtdcmAHD3i1+T8plmv7BQ/nsViSLyss=
 github.com/andybalholm/cascadia v1.3.2/go.mod h1:7gtRlve5FxPPgIgX36uWBX58OdBsSS6lUvCFb+h7KvU=
+github.com/chaewonkong/msa-link v0.1.0 h1:ms7aXtadU2DE12RWDjQWvas+tELd2k7fLiK+dOn0yh0=
+github.com/chaewonkong/msa-link v0.1.0/go.mod h1:/DzaoTMaNhYBXGBhiNd1g0KM7u+Xaf9A3chOt0XrOEo=
 github.com/chaewonkong/msa-link-api v0.0.0-20240411113710-5ed337812737 h1:g9Odxpcr9O6I7Dcu0PeO9i3NHUR5g/6bNN4qclM27uo=
 github.com/chaewonkong/msa-link-api v0.0.0-20240411113710-5ed337812737/go.mod h1:lO6gL1ZLzNYXyi50Ey94Vx0y2oFj1rR6keoOcOJkMvg=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
